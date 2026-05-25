@@ -422,6 +422,126 @@
     font-family: 'Space Mono', monospace;
   }
 
+  /* Desired Relationship State */
+  .drs-block {
+    border: 1px solid rgba(176,111,255,0.45);
+    border-radius: 4px;
+    padding: 24px 28px;
+    background: rgba(176,111,255,0.04);
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .drs-block::before {
+    content: '◎';
+    position: absolute;
+    top: 16px; right: 20px;
+    font-size: 20px;
+    color: var(--purple);
+    opacity: 0.15;
+  }
+
+  .drs-lbl {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--purple);
+    letter-spacing: 0.3em;
+    opacity: 0.75;
+    margin-bottom: 10px;
+  }
+
+  .drs-stmt {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(14px, 2.2vw, 18px);
+    font-weight: 700;
+    color: var(--text-bright);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+  }
+
+  .drs-chars { display: flex; flex-direction: column; gap: 6px; }
+
+  .drs-char {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--purple);
+    opacity: 0.8;
+    padding-left: 12px;
+    position: relative;
+    line-height: 1.6;
+  }
+
+  .drs-char::before {
+    content: '◇';
+    position: absolute;
+    left: 0;
+    opacity: 0.5;
+    font-size: 8px;
+    top: 1px;
+  }
+
+  /* Strategic Contradiction */
+  .contradiction-block {
+    border: 1px solid rgba(255,68,102,0.5);
+    border-radius: 4px;
+    padding: 24px 28px;
+    background: rgba(255,68,102,0.04);
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .contradiction-block::before {
+    content: '//';
+    position: absolute;
+    top: 16px; right: 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 18px;
+    color: var(--danger);
+    opacity: 0.18;
+  }
+
+  .contradiction-lbl {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--danger);
+    letter-spacing: 0.3em;
+    opacity: 0.7;
+    margin-bottom: 10px;
+  }
+
+  .contradiction-stmt {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(16px, 2.5vw, 21px);
+    font-weight: 700;
+    color: var(--text-bright);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    margin-bottom: 12px;
+  }
+
+  .contradiction-exp {
+    font-size: 12px;
+    line-height: 1.85;
+    color: var(--text-dim);
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* Relationship model label */
+  .rel-model {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    padding: 3px 10px;
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+    display: inline-block;
+    margin-bottom: 2px;
+  }
+
+  .proposal-a .rel-model { border: 1px solid var(--cyan);   color: var(--cyan);   background: var(--cyan-dim); }
+  .proposal-b .rel-model { border: 1px solid var(--amber);  color: var(--amber);  background: var(--amber-dim); }
+  .proposal-c .rel-model { border: 1px solid var(--purple); color: var(--purple); background: var(--purple-dim); }
+
   #outputArea { display: none; animation: fadeUp 0.4s ease; }
   #outputArea.on { display: block; }
 
@@ -586,7 +706,7 @@
 <body>
 <div class="wrap">
 
-  <div class="hd-eye">// STRATEGIC ALIGNMENT TOOL v0.4</div>
+  <div class="hd-eye">// STRATEGIC ALIGNMENT TOOL v0.6</div>
   <h1 class="hd-title">North Star <em>Studio</em></h1>
   <p class="hd-sub">
     施策の「成功定義」を会話から生成する。<br>
@@ -668,13 +788,39 @@
       </div>
     </div>
 
+    <!-- Strategic Contradiction (new in v0.5) -->
     <div class="divider">
       <div class="divider-line"></div>
-      <div class="divider-lbl">// NORTH STAR PROPOSALS</div>
+      <div class="divider-lbl">// STRATEGIC CONTRADICTION</div>
       <div class="divider-line"></div>
     </div>
 
-    <p class="proposals-note">3つの戦略方向性を比較し、チームで議論してください。</p>
+    <div class="contradiction-block">
+      <div class="contradiction-lbl">CORE PARADOX</div>
+      <div class="contradiction-stmt" id="contradictionStmt">—</div>
+      <div class="contradiction-exp" id="contradictionExp">—</div>
+    </div>
+
+    <!-- Desired Relationship State (new in v0.6) -->
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-lbl">// DESIRED RELATIONSHIP STATE</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="drs-block">
+      <div class="drs-lbl">HOW THE RELATIONSHIP SHOULD FEEL</div>
+      <div class="drs-stmt" id="drsStmt">—</div>
+      <div class="drs-chars" id="drsChars"></div>
+    </div>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-lbl">// RELATIONSHIP FUTURES</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <p class="proposals-note">3つの関係性の未来を比較し、チームで議論してください。</p>
 
     <!-- Proposal A -->
     <div class="proposal proposal-a" id="propA">
@@ -685,7 +831,7 @@
       </div>
       <div class="proposal-stmt" id="stmtA">—</div>
       <div class="proposal-body">
-        <div class="psec"><div class="psec-lbl">STRATEGIC DIRECTION</div><div class="psec-text" id="sdA">—</div></div>
+        <div class="psec"><div class="psec-lbl">RELATIONSHIP VISION</div><div class="psec-text" id="sdA">—</div></div>
         <div class="psec"><div class="psec-lbl">KEYWORDS</div><div class="tag-list" id="kwA"></div></div>
         <div class="psec"><div class="psec-lbl">AVOID</div><ul class="avoid-list" id="avoidA"></ul></div>
         <div class="psec"><div class="psec-lbl">WHY THIS WORKS</div><div class="rationale-text" id="ratA">—</div></div>
@@ -701,7 +847,7 @@
       </div>
       <div class="proposal-stmt" id="stmtB">—</div>
       <div class="proposal-body">
-        <div class="psec"><div class="psec-lbl">STRATEGIC DIRECTION</div><div class="psec-text" id="sdB">—</div></div>
+        <div class="psec"><div class="psec-lbl">RELATIONSHIP VISION</div><div class="psec-text" id="sdB">—</div></div>
         <div class="psec"><div class="psec-lbl">KEYWORDS</div><div class="tag-list" id="kwB"></div></div>
         <div class="psec"><div class="psec-lbl">AVOID</div><ul class="avoid-list" id="avoidB"></ul></div>
         <div class="psec"><div class="psec-lbl">WHY THIS WORKS</div><div class="rationale-text" id="ratB">—</div></div>
@@ -717,7 +863,7 @@
       </div>
       <div class="proposal-stmt" id="stmtC">—</div>
       <div class="proposal-body">
-        <div class="psec"><div class="psec-lbl">STRATEGIC DIRECTION</div><div class="psec-text" id="sdC">—</div></div>
+        <div class="psec"><div class="psec-lbl">RELATIONSHIP VISION</div><div class="psec-text" id="sdC">—</div></div>
         <div class="psec"><div class="psec-lbl">KEYWORDS</div><div class="tag-list" id="kwC"></div></div>
         <div class="psec"><div class="psec-lbl">AVOID</div><ul class="avoid-list" id="avoidC"></ul></div>
         <div class="psec"><div class="psec-lbl">WHY THIS WORKS</div><div class="rationale-text" id="ratC">—</div></div>
@@ -734,7 +880,7 @@
   </div>
 
   <div class="footer">
-    <div class="footer-logo">NORTH STAR <em>STUDIO</em> // v0.4</div>
+    <div class="footer-logo">NORTH STAR <em>STUDIO</em> // v0.6</div>
   </div>
 
 </div>
@@ -828,64 +974,101 @@ function toggleProp(id) {
 }
 
 function buildPrompt(userText) {
-  return `You are a senior marketing strategist. Your role is NOT to generate campaigns — your role is to help marketing teams discover and articulate a strategic "North Star": a clear, long-term success definition that aligns teams and decisions.
+  return `You are a relationship anthropologist, not a marketing consultant. Your role is to analyze the emotional and relational structure between a brand and the humans who interact with it — and to surface what no one in the organization has been able to clearly articulate.
 
-The user has shared their marketing situation. Interpret it deeply and generate 3 distinct strategic directions.
+WHAT YOU ARE:
+- A cultural strategist and behavioral anthropologist
+- A relationship designer and emotional systems thinker
+- A strategic mirror that reflects what teams already feel but cannot name
+
+WHAT YOU ARE NOT:
+- A performance marketer or growth consultant
+- A campaign planner or messaging strategist
+- An optimization engine or AI productivity tool
+
+CORE BELIEF:
+Modern marketing failures are not primarily targeting, channel, or efficiency problems.
+They are relationship problems: trust problems, memory problems, autonomy problems, emotional distance problems.
+
+THINKING FRAMEWORK — analyze through these lenses:
+- Emotional distance: Why do people not feel close to this brand despite frequent interaction?
+- Relationship structure: What kind of relationship actually exists vs what is desired?
+- Memory formation: What creates lasting emotional memory vs transactional forgetting?
+- Autonomy: Does the brand support self-choice or quietly remove it?
+- Trust dynamics: What builds or quietly erodes trust in this context?
+- Emotional safety: Does interacting with this brand feel safe or subtly pressuring?
+- Cultural psychology: What emotional climate does this brand exist within?
+- Behavioral contradictions: What do people do vs what they actually want to feel?
+
+STRICT LANGUAGE RULES — never use:
+maximize, optimize, ROI, engagement, data-driven, scalable, conversion, leverage, synergy, personalization at scale, target audience, segmentation, messaging strategy, campaign mechanics, channel optimization, content strategy, brand awareness metrics
+
+INSTEAD use structures like:
+emotional ownership, relationship memory, autonomy, self-discovery, decision fatigue, optimization fatigue, algorithmic sameness, authenticity pressure, emotional self-protection, surveillance discomfort, passive participation, identity formation, trust erosion, emotional presence vs visibility
+
+TONE: observant, psychologically literate, culturally reflective, strategically restrained — like a cultural essay or relationship analysis, NOT a management consulting deck.
 
 User input:
 ---
 ${userText}
 ---
 
-Respond with ONLY a JSON object. No markdown. No code fences. No explanation before or after. Start your response with { and end with }.
+Respond with ONLY a JSON object. No markdown. No code fences. Start with { end with }.
 
 {
   "interpretation": {
-    "detectedGoals": ["goal1", "goal2", "goal3"],
-    "emotionalFriction": ["friction1", "friction2", "friction3"],
-    "strategicRisks": ["risk1", "risk2"],
-    "coreTension": ["tension1", "tension2"]
+    "detectedGoals": ["ブランド固有の具体的なゴール（関係性・感情構造の言葉で）", "ゴール2", "ゴール3"],
+    "emotionalFriction": ["感情的な距離・摩擦の具体的な構造1", "摩擦2", "摩擦3"],
+    "strategicRisks": ["このブランドが陥りやすい関係性上のリスク（文化的・心理的に具体的）", "リスク2"],
+    "coreTension": ["具体的な緊張構造1（例：最適化された体験 vs 感情的な所有感）", "緊張構造2"]
+  },
+  "contradiction": {
+    "statement": "このブランドと生活者の間に存在する根本的矛盾を1文で。鋭く、記憶に残り、チームが「そうだ、これだ」と感じるもの。例：「使われているが感情的に選ばれていない」「常に見えているが記憶に残っていない」「便利さが親密さを破壊している」",
+    "explanation": "その矛盾がなぜ生まれているか。ブランドと人間の関係構造・感情的メカニズムから2〜3文で。心理的・文化的に具体的に。"
+  },
+  "desiredRelationshipState": {
+    "statement": "このブランドがあるべき「存在様式」を1文で。キャンペーンでも施策でもなく、関係性の質として。例：「必要なときだけ自然に現れる存在」「行動を最大化するのではなく不安を減らす存在」「広告より先に感情的に馴染みある存在」",
+    "characteristics": ["その関係状態の具体的な特徴1（感情的・行動的に描写）", "特徴2", "特徴3"]
   },
   "proposals": [
     {
       "option": "A",
-      "directionName": "Short direction label in English",
-      "northStarStatement": "日本語15〜25文字のステートメント",
-      "strategicDirection": "日本語3〜4行の戦略的方向性",
-      "keywords": ["kw1", "kw2", "kw3", "kw4", "kw5"],
-      "avoid": ["避けること1", "避けること2", "避けること3"],
-      "whyThisWorks": "日本語2〜3行の根拠"
+      "relationshipModel": "関係性モデルの短い名前（例：Quiet Presence / Emotional Safety / Self-Direction Support）",
+      "northStarStatement": "日本語15〜25文字。矛盾を超えた先にある関係性の未来として機能するステートメント",
+      "relationshipVision": "このブランドが人の生活の中にどう存在するか。感情的役割・日常との接触様式・信頼の構造を3〜4行で。施策ではなく関係性として描く。",
+      "keywords": ["関係性・感情・心理を表すkw1", "kw2", "kw3", "kw4", "kw5"],
+      "avoid": ["人が感情的に離れる瞬間の具体的トリガー1（心理的・文化的に鋭く）", "トリガー2", "トリガー3"],
+      "whyThisWorks": "この関係性の方向性が、このブランドの矛盾と人間の感情構造に対してなぜ有効か。2〜3文で。"
     },
     {
       "option": "B",
-      "directionName": "Short direction label in English",
-      "northStarStatement": "日本語15〜25文字のステートメント",
-      "strategicDirection": "日本語3〜4行の戦略的方向性",
+      "relationshipModel": "関係性モデル名",
+      "northStarStatement": "日本語15〜25文字",
+      "relationshipVision": "関係性ビジョン3〜4行",
       "keywords": ["kw1", "kw2", "kw3", "kw4", "kw5"],
-      "avoid": ["避けること1", "避けること2", "避けること3"],
-      "whyThisWorks": "日本語2〜3行の根拠"
+      "avoid": ["感情的離脱トリガー1", "トリガー2", "トリガー3"],
+      "whyThisWorks": "根拠2〜3行"
     },
     {
       "option": "C",
-      "directionName": "Short direction label in English",
-      "northStarStatement": "日本語15〜25文字のステートメント",
-      "strategicDirection": "日本語3〜4行の戦略的方向性",
+      "relationshipModel": "関係性モデル名",
+      "northStarStatement": "日本語15〜25文字",
+      "relationshipVision": "関係性ビジョン3〜4行",
       "keywords": ["kw1", "kw2", "kw3", "kw4", "kw5"],
-      "avoid": ["避けること1", "避けること2", "避けること3"],
-      "whyThisWorks": "日本語2〜3行の根拠"
+      "avoid": ["感情的離脱トリガー1", "トリガー2", "トリガー3"],
+      "whyThisWorks": "根拠2〜3行"
     }
   ]
 }
 
-Rules:
-- Option A: performance / acquisition direction
-- Option B: long-term brand memory / relationship direction
-- Option C: cultural resonance / user agency direction
-- northStarStatement must be in Japanese, 15-25 chars, memorable
+Critical rules:
+- Every output must feel specific to THIS brand and situation — not interchangeable
+- contradiction.statement must be psychologically sharp and culturally modern
+- desiredRelationshipState must describe HOW THE RELATIONSHIP FEELS, not what campaigns to run
+- avoid items = emotional rejection triggers, NOT marketing mistakes or compliance advice
 - Do NOT use newline characters inside JSON string values
-- Keep each string value concise`;
+- Keep string values concise but emotionally precise`;
 }
-
 async function callClaude(key, prompt) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -1010,12 +1193,31 @@ function render(data) {
   makeTags(document.getElementById('strategicRisks'),   interp.strategicRisks,  'tag-danger');
   makeTags(document.getElementById('coreTension'),      interp.coreTension,     'tag-green');
 
+  // Strategic Contradiction (v0.5)
+  const contra = data.contradiction || {};
+  document.getElementById('contradictionStmt').textContent = contra.statement || '—';
+  document.getElementById('contradictionExp').textContent  = contra.explanation || '—';
+
+  // Desired Relationship State (v0.6)
+  const drs = data.desiredRelationshipState || {};
+  document.getElementById('drsStmt').textContent = drs.statement || '—';
+  const drsCharsEl = document.getElementById('drsChars');
+  drsCharsEl.innerHTML = '';
+  (drs.characteristics || []).forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'drs-char';
+    div.textContent = c;
+    drsCharsEl.appendChild(div);
+  });
+
   const props = data.proposals || [];
   ['A','B','C'].forEach((l, i) => {
     const p = props[i]; if (!p) return;
-    document.getElementById(`dir${l}`).textContent  = p.directionName || '';
+    // directionName fallback to relationshipModel
+    document.getElementById(`dir${l}`).textContent  = p.relationshipModel || p.directionName || '';
     document.getElementById(`stmt${l}`).textContent = p.northStarStatement || '—';
-    document.getElementById(`sd${l}`).textContent   = p.strategicDirection || '—';
+    // relationshipVision fallback to strategicDirection
+    document.getElementById(`sd${l}`).textContent   = p.relationshipVision || p.strategicDirection || '—';
     document.getElementById(`rat${l}`).textContent  = p.whyThisWorks || '—';
     makeTags(document.getElementById(`kw${l}`), p.keywords, 'tag-amber');
     makeAvoid(document.getElementById(`avoid${l}`), p.avoid);
@@ -1045,7 +1247,7 @@ function exportJSON() {
   const record = {
     _meta: {
       tool: 'North Star Studio',
-      version: '0.4',
+      version: '0.6',
       model: model,
       timestamp: ts.toISOString(),
       date: ts.toLocaleDateString('ja-JP'),
@@ -1108,7 +1310,7 @@ async function exportPDF() {
     fl(0,0,W,297,C.bg);
     y=22;
     mono(); doc.setFontSize(7); tc(C.di);
-    doc.text('// STRATEGIC ALIGNMENT TOOL v0.4', mg, y); y+=10;
+    doc.text('// STRATEGIC ALIGNMENT TOOL v0.6', mg, y); y+=10;
     hv('bold'); doc.setFontSize(26); tc(C.br); doc.text('North Star', mg, y); y+=9;
     tc(C.cy); doc.text('Studio', mg, y); y+=12;
     hl(y,C.cy,0.4); y+=8;
@@ -1216,7 +1418,7 @@ async function exportPDF() {
     const total=doc.getNumberOfPages();
     for(let i=1;i<=total;i++){
       doc.setPage(i); mono(); doc.setFontSize(7); tc(C.di);
-      doc.text('North Star Studio v0.4', mg, 291);
+      doc.text('North Star Studio v0.6', mg, 291);
       doc.text(i+' / '+total, W-mg-8, 291);
     }
 
